@@ -17,19 +17,19 @@ def getGenericNotifyMessage(
 }
 
 def notifyBuildStarted() {
-    return slackSend(channel: "CRSLEP2PP:p1580321196001800", 
+    return slackSend(channel: "idsign-jenkins", 
         color: '', 
         message: getGenericNotifyMessage(env.JOB_NAME, env.BUILD_NUMBER, 'Started', env.BUILD_URL)); 
 }
 
 def notifyBuildSucceeded() {
-    return slackSend(channel: "CRSLEP2PP:p1580321196001800",
+    return slackSend(channel: "idsign-jenkins",
         color: 'good', 
         message: getGenericNotifyMessage(env.JOB_NAME, env.BUILD_NUMBER, 'Success', env.BUILD_URL)); 
 }
 
 def notifyBuildFailed(String excMessage) {
-    return slackSend(channel: "CRSLEP2PP:p1580321196001800",
+    return slackSend(channel: "idsign-jenkins",
         color: '#ff0000', 
         message: getGenericNotifyMessage(env.JOB_NAME, env.BUILD_NUMBER, 'Failed', 
         env.BUILD_URL, "Exception: " + excMessage)); 

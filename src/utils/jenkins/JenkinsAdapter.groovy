@@ -16,7 +16,7 @@ class JenkinsAdapter implements Serializable {
     }
 
     static Map readJSONFromText(String jsonText) {
-        return script.readJSON text: jsonText
+        return script.readJSON(text: jsonText);
     }
 
     static void writeFile(String path, String content) {

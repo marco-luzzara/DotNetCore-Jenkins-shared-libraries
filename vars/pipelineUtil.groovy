@@ -3,7 +3,7 @@ package globalUtils.pipeline;
 import config.*;
 import dotnetcore.pipeline.Pipeline;
 
-def getPipelinePrivateConfig(Strig credentialsId, String fileName) {
+def getPipelinePrivateConfig(String credentialsId, String fileName) {
     def fileNamePath = "config/private/${fileName}";
 
     checkout([

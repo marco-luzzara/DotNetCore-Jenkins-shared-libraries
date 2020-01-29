@@ -64,7 +64,7 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
         try {
             def userLogin = "${this.prjManagePortalUserName}:${this.prjManagePortalUserPwd}";
             userLogin = userLogin.replace("'", "'\\''");
-            def trackerType = shReturnStdOut("""curl --basic -u '${userlogin}' ${url} > ./redmine_issue.xml && \
+            def trackerType = shReturnStdOut("""curl --basic -u '${userLogin}' ${url} > ./redmine_issue.xml && \
                 xmllint --xpath \"/issue/custom_fields/custom_field[@name='Release type']/value/text()\" ./redmine_issue.xml""");
                 
             switch (trackerType) {

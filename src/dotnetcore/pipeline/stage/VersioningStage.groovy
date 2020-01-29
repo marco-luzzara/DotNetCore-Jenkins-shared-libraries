@@ -14,6 +14,9 @@ class VersioningStage extends GenericStage {
     boolean doesManuallyIncrementMajor;
     String versioningServerEndpoint;
     List versioningCsProjs;
+    String prjManagePortalUrl;
+    String prjManagePortalUserName;
+    String prjManagePortalUserPwd;
 
     GenericVersioningSystem versioningSystem;
 

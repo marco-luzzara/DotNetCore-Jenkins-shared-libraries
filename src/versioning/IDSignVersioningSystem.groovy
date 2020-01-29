@@ -14,6 +14,9 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
     final String taskId
     final boolean doesIncrementMajor;
     final String versioningServerEndpoint;
+    final String prjManagePortalUrl;
+    final String prjManagePortalUserName;
+    final String prjManagePortalUserPwd;
 
     @Lazy private String _lastVersion = {
         def patternForProjName = ~"\\.\\/.*\\/(.*)\\.csproj";

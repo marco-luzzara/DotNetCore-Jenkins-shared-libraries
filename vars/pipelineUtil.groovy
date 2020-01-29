@@ -32,7 +32,8 @@ def getPipelinePrivateConfig(String credentialsId, String fileName) {
 
     println("parsedMap private config: ${parsedMap}");
 
-    sh 'rm -r config'
+    sh "rm -r config"
+    sh "rm -r '.git'"
 
     return parsedMap;
 }

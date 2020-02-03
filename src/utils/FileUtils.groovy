@@ -7,6 +7,8 @@ class FileUtils implements Serializable {
         def files = shReturnStdOut("find ${relativePath} -regextype sed -regex '${regex}'")
             .trim().split('\n');
 
+        files = files.removeAll([""]);
+
         return files;
     }
 

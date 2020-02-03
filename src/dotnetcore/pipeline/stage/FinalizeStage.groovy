@@ -54,12 +54,16 @@ class FinalizeStage extends GenericStage {
     protected Map getNewVersionChanges(String projPath) {
         def lastVersionCommit = this.getLastTagCommit(projPath);
         def commitsFromLastVersion = this.getSubsetOfCommits(lastVersionCommit);
+        log("commitsFromLastVersion: ${commitsFromLastVersion}");
 
         def nextVersion = this.csprojVersionMap[projPath].nextVersion;
         Map changes = [version: nextVersion];
 
         def taskMap = [:];
+        
+        log("commits size: ${commitsFromLastVersion.size()}");
         for (commit in commitsFromLastVersion) {
+            log("commit: ${commit}");
             def commitMsg = shReturnStdOut("git show --quiet --format='%s' ${commit}").trim();
 
             def patternForTaskNumFromMsg = ~"^(?:[rR]if\\.? +)?#(\\d+) *(?::|-| )";

@@ -1,36 +1,39 @@
 package globalUtils.notifications;
 
+def getHEADCommitAuthor() {
+    return sh(script:'git show --quiet HEAD --format="%an (%ae)"', returnStdout: true);
+}
+
 def getGenericNotifyMessage(
-    String jobName, 
-    String buildNumber,
-    String status, 
-    String url,
+    String status,
     String additionalInfo = '') 
 {
+    def headCommitAuthor = getHEADCommitAuthor();
+
     return """
-        Pipeline: ${jobName}
-        Build: #${buildNumber}
+        Pipeline: ${env.JOB_NAME}
+        Build: #${env.BUILD_NUMBER} on ${env.NODE_NAME}
+        Commit of: ${headCommitAuthor}
         Status: ${status}
-        Url: ${url}
+        Url: ${env.BUILD_URL}
         Additional Info: ${additionalInfo}
         """
 }
 
 def notifyBuildStarted() {
-    return slackSend(channel: "idsign-jenkins", 
+    return slackSend(
         color: '', 
-        message: getGenericNotifyMessage(env.JOB_NAME, env.BUILD_NUMBER, 'Started', env.BUILD_URL)); 
+        message: getGenericNotifyMessage('Started')); 
 }
 
 def notifyBuildSucceeded() {
-    return slackSend(channel: "idsign-jenkins",
+    return slackSend(
         color: 'good', 
-        message: getGenericNotifyMessage(env.JOB_NAME, env.BUILD_NUMBER, 'Success', env.BUILD_URL)); 
+        message: getGenericNotifyMessage('Success')); 
 }
 
 def notifyBuildFailed(String excMessage) {
-    return slackSend(channel: "idsign-jenkins",
+    return slackSend(
         color: '#ff0000', 
-        message: getGenericNotifyMessage(env.JOB_NAME, env.BUILD_NUMBER, 'Failed', 
-        env.BUILD_URL, "Exception: " + excMessage)); 
+        message: getGenericNotifyMessage('Failed', "Exception: ${excMessage}")); 
 }

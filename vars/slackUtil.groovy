@@ -1,7 +1,7 @@
 package globalUtils.notifications;
 
 def getHEADCommitAuthor() {
-    return sh(script:'git show --quiet HEAD --format="%an (%ae)"', returnStdout: true);
+    return sh(script:'git show --quiet HEAD --format="%an (%ae)"', returnStdout: true).trim();
 }
 
 def getGenericNotifyMessage(
@@ -36,4 +36,10 @@ def notifyBuildFailed(String excMessage) {
     return slackSend(
         color: '#ff0000', 
         message: getGenericNotifyMessage('Failed', "Exception: ${excMessage}")); 
+}
+
+def notifyBuildAborted() {
+    return slackSend(
+        color: '#ff0000', 
+        message: getGenericNotifyMessage('Aborted', 'This build has been ABORTED')); 
 }

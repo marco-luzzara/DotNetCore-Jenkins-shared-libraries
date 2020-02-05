@@ -10,14 +10,14 @@ import java.util.regex.Pattern;
 import groovy.json.JsonOutput;
 
 class FinalizeStage extends GenericStage {
-    String versioningServerEndpoint;
     Map csprojVersionMap;
+    GenericVersioningSystem versioningSystem;
 
     FinalizeStage(Map stageConfig = [:]) {
         super(stageConfig);
 
-        this.versioningServerEndpoint = stageConfig.versioningServerEndpoint;
         this.csprojVersionMap = stageConfig.csprojVersionMap;
+        this.versioningSystem = stageConfig.versioningSystem;
     }
     
     protected String getLastTagCommit(String projPath) {
@@ -110,21 +110,6 @@ class FinalizeStage extends GenericStage {
         basicSh("git push --delete origin ${nextVersion} || true");
     }
 
-    protected void rollbackVersioning() {
-        this.csprojVersionMap.each { csproj, versions ->
-            log("csproj: ${csproj}");
-            log("versions: ${versions}");
-
-            def projectName = this.getProjectNameFromCsProjPath(csproj);
-            def version = versions.nextVersion;
-
-            def url = "http://${this.versioningServerEndpoint}/${projectName}/versions/${version}";
-
-            def curlRequest = "curl -X DELETE ${url}";
-            basicSh(curlRequest);
-        }
-    }
-
     protected void updateVersioningServer() {
         this.csprojVersionMap.each { csproj, versions ->
             log("csproj: ${csproj}");
@@ -137,11 +122,25 @@ class FinalizeStage extends GenericStage {
             log("jsonChanges: ${jsonChanges}");
             def projectName = this.getProjectNameFromCsProjPath(csproj);
 
-            def url = "http://${this.versioningServerEndpoint}/${projectName}/versions";
-            def headerContentType = "Content-Type: application/json";
+            this.versioningSystem.publishNewVersion([
+                projectName: projectName,
+                jsonChanges: jsonChanges
+            ]);
+        }
+    }
 
-            def curlRequest = "curl -X POST -d '${jsonChanges}' -H \"${headerContentType}\" ${url}";
-            basicSh(curlRequest);
+    protected void rollbackVersioning() {
+        this.csprojVersionMap.each { csproj, versions ->
+            log("csproj: ${csproj}");
+            log("versions: ${versions}");
+
+            def projectName = this.getProjectNameFromCsProjPath(csproj);
+            def version = versions.nextVersion;
+
+            this.versioningSystem.deleteVersion([
+                projectName: projectName,
+                version: version
+            ]);
         }
     }
 

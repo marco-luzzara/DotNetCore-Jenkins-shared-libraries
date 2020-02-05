@@ -12,23 +12,15 @@ import java.util.regex.Pattern;
 
 class VersioningStage extends GenericStage {
     boolean doesManuallyIncrementMajor;
-    String versioningServerEndpoint;
     List versioningCsProjs;
-    String prjManagePortalUrl;
-    String prjManagePortalUserName;
-    String prjManagePortalUserPwd;
-
     GenericVersioningSystem versioningSystem;
 
     VersioningStage(Map stageConfigs = [:]) {
         super(stageConfigs);
 
-        this.doesManuallyIncrementMajor = stageConfigs.doesManuallyIncrementMajor;  
-        this.versioningServerEndpoint = stageConfigs.versioningServerEndpoint;
+        this.doesManuallyIncrementMajor = stageConfigs.doesManuallyIncrementMajor;
         this.versioningCsProjs = stageConfigs.versioningCsProjs;
-        this.prjManagePortalUrl = stageConfigs.prjManagePortalUrl;
-        this.prjManagePortalUserName = stageConfigs.prjManagePortalUserName;
-        this.prjManagePortalUserPwd = stageConfigs.prjManagePortalUserPwd;
+        this.versioningSystem = stageConfigs.versioningSystem;
     }
 
     private String getLastCommitMsg() {
@@ -115,18 +107,16 @@ class VersioningStage extends GenericStage {
             for (csproj in csprojs.intersect(this.versioningCsProjs)) {
                 log("csproj: ${csproj}");
 
-                this.versioningSystem = new IDSignVersioningSystem([
-                    csProjPath: csproj,
+                def projectName = this.getProjectNameFromCsProjPath(csproj);
+
+                def versions = this.versioningSystem.getLastAndNextVersion([
+                    projectName: projectName,
                     taskId: commitMsgParsed.taskId,
-                    doesIncrementMajor: doesIncrementMajor,
-                    versioningServerEndpoint: this.versioningServerEndpoint,
-                    prjManagePortalUrl: this.prjManagePortalUrl,
-                    prjManagePortalUserName: this.prjManagePortalUserName,
-                    prjManagePortalUserPwd: this.prjManagePortalUserPwd
+                    doesIncrementMajor: doesIncrementMajor
                 ]);
 
-                def lastVersion = this.versioningSystem.getLastVersion();
-                def nextVersion = this.versioningSystem.getNextVersion();
+                def lastVersion = versions[0];
+                def nextVersion = versions[1];
 
                 log("lastVersion: ${lastVersion}");
                 log("nextVersion: ${nextVersion}");

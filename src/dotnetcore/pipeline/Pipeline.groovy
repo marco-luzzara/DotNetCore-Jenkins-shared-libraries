@@ -7,6 +7,7 @@ import utils.script.ScriptAdapter;
 import utils.jenkins.JenkinsAdapter;
 import utils.vcs.VCSAdapter;
 import utils.PipelineStages;
+import versioning.interfaces.GenericVersioningSystem;
 
 import java.lang.reflect.*;
 
@@ -19,8 +20,8 @@ class Pipeline implements Serializable {
     PipelineConfig config;
     PrivateConfig privateConfig;
     Stack<GenericStage> executedStages = new Stack<GenericStage>();
-
     Map<String, GenericStage> customizedStageMap = [:];
+    GenericVersioningSystem versioningSystem = null;
 
     Pipeline(PipelineConfig config, PrivateConfig privateConfig, Script _script) {
         this.config = config;
@@ -49,6 +50,14 @@ class Pipeline implements Serializable {
 
     protected void assertCsProjVersionMapNotEmpty() {
         assert this.csprojVersionMap != [:] : "this.csprojVersionMap has not been initialized. See step versioning()";
+    }
+
+    protected void assertVersioningSystemInjected() {
+        assert this.versioningSystem != null : "this.versioningSystem has not been injected. See injectVersioningSystem()";
+    }
+
+    public void injectVersioningSystem(GenericVersioningSystem versioningSystem) {
+        this.versioningSystem = versioningSystem;
     }
 
     public void injectCustomizeStage(String stageType, GenericStage customizedStage) {
@@ -150,19 +159,18 @@ class Pipeline implements Serializable {
     }
 
     protected void versioning() {
+        assertVersioningSystemInjected();
+
         def allVersioningProjects = [this.config.internalProjects, this.config.deployProjects]
             .flatten()
             .unique();
-            
+
         log("allVersioningProjects: ${allVersioningProjects}");
 
         def standardStage = new VersioningStage([
             doesManuallyIncrementMajor: this.config.doesManuallyIncrementMajor, 
-            versioningServerEndpoint: this.config.versioningServerEndpoint,
             versioningCsProjs: allVersioningProjects,
-            prjManagePortalUrl: this.config.prjManagePortalUrl,
-            prjManagePortalUserName: this.privateConfig.jenkinsUserName,
-            prjManagePortalUserPwd: this.privateConfig.jenkinsUserPwd
+            versioningSystem: this.versioningSystem
         ]);
 
         def stage = this.getCustomStageIfExists(PipelineStages.VERSIONING, standardStage); 
@@ -227,13 +235,14 @@ class Pipeline implements Serializable {
 
     protected void complete() {
         assertCsProjVersionMapNotEmpty();
+        assertVersioningSystemInjected();
 
         if (!this.isArtifactRequested)
             return 
 
         def standardStage = new FinalizeStage([
             csprojVersionMap: this.csprojVersionMap,
-            versioningServerEndpoint: this.config.versioningServerEndpoint
+            versioningSystem: this.versioningSystem
         ]);
 
         def stage = this.getCustomStageIfExists(PipelineStages.COMPLETE, standardStage); 

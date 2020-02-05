@@ -2,7 +2,6 @@ package dotnetcore.pipeline.stage;
 
 import interfaces.pipeline.stage.GenericStage;
 
-import static utils.FileUtils.getLinuxFilesOnRegex;
 import static utils.script.ScriptAdapter.*;
 import static utils.DateUtils.getFormattedDate;
 import static utils.jenkins.JenkinsAdapter.*;

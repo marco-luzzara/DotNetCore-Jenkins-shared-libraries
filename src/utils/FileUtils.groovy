@@ -3,11 +3,11 @@ package utils;
 import static utils.script.ScriptAdapter.*;
 
 class FileUtils implements Serializable {
-    static String[] getLinuxFilesOnRegex(String relativePath, String regex) {
+    static List getLinuxFilesOnRegex(String relativePath, String regex) {
         def files = shReturnStdOut("find ${relativePath} -regextype sed -regex '${regex}'")
-            .trim().split('\n');
+            .trim().split('\n') as List;
 
-        files = files.removeAll([""]);
+        files.removeAll([""]);
 
         return files;
     }

@@ -93,7 +93,7 @@ class VersioningStage extends GenericStage {
 
         def returnMap = [:];        
 
-        def csprojs = getLinuxFilesOnRegex('./src/', "\\./.*/.*\\.csproj") as List;
+        def csprojs = getLinuxFilesOnRegex('./src/', "\\./.*/.*\\.csproj");
 
         def lastCommitMsg = this.getLastCommitMsg();
         def commitMsgParsed = this.getTaskIdAndTagFromCommitMsg(lastCommitMsg);

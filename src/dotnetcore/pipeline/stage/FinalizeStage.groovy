@@ -44,7 +44,7 @@ class FinalizeStage extends GenericStage {
 
         def commits = shReturnStdOut("git rev-list ${excludedstartingCommit}..HEAD")
             .trim().split("\n") as List;
-        commits = commits.removeAll([""]);
+        commits.removeAll([""]);
 
         if (includeCommit)
             commits.push(excludedstartingCommit);

@@ -1,6 +1,7 @@
 package dotnetcore.pipeline.stage;
 
 import interfaces.pipeline.stage.GenericStage;
+import versioning.interfaces;
 
 import static utils.FileUtils.*;
 import static utils.script.ScriptAdapter.*;

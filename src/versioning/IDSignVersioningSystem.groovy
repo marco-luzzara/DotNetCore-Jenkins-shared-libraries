@@ -82,13 +82,13 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
         return vType;
     }
 
-    def getLastVersion(Maps params = [:]) {
+    def getLastVersion(Map params = [:]) {
         def lastVersion = this._getLastVersion(params.csProjPath);
 
         return lastVersion;
     }
 
-    def getNextVersion(Maps params = [:]) {
+    def getNextVersion(Map params = [:]) {
         throw new IllegalStateException("As for now use getLastAndNextVersion because you are calling getLastVersion anyway, rif. #10185");
 
         // def lastVersion = this._getLastVersion(params.projectName);
@@ -112,7 +112,7 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
         basicSh(curlRequest);
     }
 
-    def deleteVersion(Maps params = [:]) {
+    def deleteVersion(Map params = [:]) {
         def url = "http://${this.versioningServerEndpoint}/${params.projectName}/versions/${params.version}";
 
         def curlRequest = "curl -X DELETE ${url}";

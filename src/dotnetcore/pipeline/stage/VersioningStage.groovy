@@ -136,9 +136,9 @@ class VersioningStage extends GenericStage {
                     nextVersion: nextVersion
                 ]);
             }
-        }
 
-        handleDisalignedProjects(csprojVersionMap);
+            handleDisalignedProjects(csprojVersionMap);
+        }
 
         returnMap.put("projectVersionMap", csprojVersionMap);
         log("csprojVersionMap: ${csprojVersionMap}");

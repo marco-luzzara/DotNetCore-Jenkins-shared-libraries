@@ -150,7 +150,10 @@ class Pipeline implements Serializable {
     }
 
     protected void versioning() {
-        def allVersioningProjects = [this.config.internalProjects, this.config.deployProjects].flatten();
+        def allVersioningProjects = [this.config.internalProjects, this.config.deployProjects]
+            .flatten()
+            .unique();
+            
         log("allVersioningProjects: ${allVersioningProjects}");
 
         def standardStage = new VersioningStage([

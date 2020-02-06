@@ -2,43 +2,31 @@ package globalUtils.pipeline;
 
 import config.*;
 import dotnetcore.pipeline.Pipeline;
+import static utils.vcs.VCSAdapter.getFileContentFromVCS;
 
 def getPipelinePrivateConfig(String credentialsId, String fileName) {
-    def fileNamePath = "config/private/${fileName}";
+    def filePath = "config/private/${fileName}";
+    def repoUrl = 'https://redmine.aliaslab.net/git/prj-00858.git';
 
-    checkout([
-        $class: 'GitSCM', 
-        branches: [[name: '*/master']], 
-        doGenerateSubmoduleConfigurations: false, 
-        extensions: [
-            [
-                $class: 'SparseCheckoutPaths', 
-                sparseCheckoutPaths: [[path: fileNamePath]]
-            ]
-        ], 
-        submoduleCfg: [], 
-        userRemoteConfigs: [
-            [
-                credentialsId: credentialsId, 
-                url: 'https://redmine.aliaslab.net/git/prj-00858.git'
-            ]
-        ]
-    ])
-
-    def stringedCredentials = readFile file: fileNamePath
+    def stringedCredentials = getFileContentFromVCS(credentialsId, filePath, repoUrl);
 
     def parsedMap = readJSON text: stringedCredentials
     parsedMap.credentialsId = credentialsId;
 
     println("parsedMap private config: ${parsedMap}");
 
-    sh "rm -r config"
-    sh "rm -r '.git'"
-
     return parsedMap;
 }
 
-def getPipelineConfig(String pipelineConfigJson) {
+def getPipelineConfig(String pipelineConfigJson, boolean isManualBuild, String credentialsId) {
+    if (!isManualBuild) {
+        def filePath = "config/IDSign/${env.JOB_BASE_NAME}.json";
+        def repoUrl = 'https://redmine.aliaslab.net/git/prj-00858.git';
+
+        def pipelineConfigFromRepo = getFileContentFromVCS(credentialsId, filePath, repoUrl);
+        pipelineConfigJson = pipelineConfigFromRepo;
+    }
+
     println("pipelineConfigJson: ${pipelineConfigJson}");
 
     def parsedMap = readJSON text: pipelineConfigJson

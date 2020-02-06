@@ -12,7 +12,16 @@ class FileUtils implements Serializable {
         return files;
     }
 
-    static void deleteLinuxFile(String path) {
+    static void deleteLinuxFileSafely(String path) {
         basicSh("rm ${path} || true");
+    }
+
+    static void deleteLinuxFileOrDir(String filePath) {
+        def indexOfSlash = filePath.indexOf('/');
+
+        if (indexOfSlash == -1)
+            basicSh("rm -r '${filePath}'");
+        else
+            basicSh("rm -r '${filePath.substring(0, indexOfSlash)}'");
     }
 }

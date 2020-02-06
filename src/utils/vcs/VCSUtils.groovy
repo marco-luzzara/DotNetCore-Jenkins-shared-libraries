@@ -1,5 +1,7 @@
 package utils.vcs;
 
+import static utils.FileUtils.deleteLinuxFileOrDir;
+
 def gitCheckout(String credentialsId, String repoUrl, String jenkinsUserName, String jenkinsUserPwd) {
     checkout([
         $class: 'GitSCM', branches: [[name: '*/master']], 
@@ -20,6 +22,34 @@ def gitCheckout(String credentialsId, String repoUrl, String jenkinsUserName, St
     def credentials = "${jenkinsUserName}:${pwdEscapedQuoteAndAt}";
     def originUrl = "https://${credentials}@${repoUrl[8..-1]}";
     sh "git config remote.origin.url '${originUrl}'";
+}
+
+def getFileContentFromVCS(String credentialsId, String filePath, String repoUrl) {
+    checkout([
+        $class: 'GitSCM', 
+        branches: [[name: '*/master']], 
+        doGenerateSubmoduleConfigurations: false, 
+        extensions: [
+            [
+                $class: 'SparseCheckoutPaths', 
+                sparseCheckoutPaths: [[path: filePath]]
+            ]
+        ], 
+        submoduleCfg: [], 
+        userRemoteConfigs: [
+            [
+                credentialsId: credentialsId, 
+                url: repoUrl
+            ]
+        ]
+    ])
+
+    def fileContent = readFile file: filePath
+    
+    deleteLinuxFileOrDir(filePath);
+    deleteLinuxFileOrDir('.git');
+
+    return fileContent
 }
 
 return this;

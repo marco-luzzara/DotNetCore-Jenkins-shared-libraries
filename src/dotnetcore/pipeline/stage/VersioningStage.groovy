@@ -99,8 +99,12 @@ class VersioningStage extends GenericStage {
         def commitMsgParsed = this.getTaskIdAndTagFromCommitMsg(lastCommitMsg);
 
         def doesIncrementMajor = commitMsgParsed.doesIncrementMajor || this.doesManuallyIncrementMajor;
+
         def isArtifactRequested = commitMsgParsed.isArtifactRequested;
         returnMap.put("isArtifactRequested", isArtifactRequested);
+
+        def taskId = commitMsgParsed.taskId;
+        this.versioningSystem.setTaskId(taskId);
 
         def csprojVersionMap = [:];
         if (isArtifactRequested) {
@@ -111,7 +115,6 @@ class VersioningStage extends GenericStage {
 
                 def versions = this.versioningSystem.getLastAndNextVersion([
                     projectName: projectName,
-                    taskId: commitMsgParsed.taskId,
                     doesIncrementMajor: doesIncrementMajor
                 ]);
 

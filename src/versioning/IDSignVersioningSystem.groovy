@@ -4,7 +4,7 @@ import versioning.type.SemanticVersionType;
 import versioning.interfaces.GenericVersioningSystem;
 
 import static utils.script.ScriptAdapter.*;
-import static utils.FileUtils.deleteLinuxFile;
+import static utils.FileUtils.deleteLinuxFileSafely;
 import static utils.RegexUtils.getCGroupsAgainstPattern;
 
 import java.util.regex.Pattern;
@@ -15,6 +15,9 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
     final String prjManagePortalUserName;
     final String prjManagePortalUserPwd;
 
+    SemanticVersionType semVersionType = null;
+    String taskId = null;
+
     IDSignVersioningSystem(Map configs = [:]) {
         super(configs);
 
@@ -22,6 +25,11 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
         this.prjManagePortalUrl = configs.prjManagePortalUrl;
         this.prjManagePortalUserName = configs.prjManagePortalUserName;
         this.prjManagePortalUserPwd = configs.prjManagePortalUserPwd;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+        this.semVersionType = getVersionTypeFromTask(taskId);
     }
 
     private String _getLastVersion(String projectName) {
@@ -38,8 +46,10 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
         }
     }
 
-    private String _getNextVersion(String lastVersion, String taskId, boolean doesIncrementMajor) {
-        def uncheckedVersionType = getVersionTypeFromTask(taskId);
+    private String _getNextVersion(String lastVersion, boolean doesIncrementMajor) {
+        assert this.semVersionType != null : "expected call to setTaskId() before computing nextVersion";
+
+        def uncheckedVersionType = this.semVersionType;
         def versionType = uncheckedVersionType == SemanticVersionType.MAJOR ? 
             (doesIncrementMajor ? SemanticVersionType.MAJOR : SemanticVersionType.MINOR) :
             uncheckedVersionType;
@@ -76,7 +86,7 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
             }
         }
         finally {
-            deleteLinuxFile('./redmine_issue.xml');
+            deleteLinuxFileSafely('./redmine_issue.xml');
         }
 
         return vType;
@@ -92,14 +102,14 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
         throw new IllegalStateException("As for now use getLastAndNextVersion because you are calling getLastVersion anyway, rif. #10185");
 
         // def lastVersion = this._getLastVersion(params.projectName);
-        // def nextVersion = this._getNextVersion(lastVersion, params.taskId, params.doesIncrementMajor);
+        // def nextVersion = this._getNextVersion(lastVersion, params.doesIncrementMajor);
 
         // return nextVersion;
     }
 
     def getLastAndNextVersion(Map params = [:]) {
         def lastVersion = this._getLastVersion(params.projectName);
-        def nextVersion = this._getNextVersion(lastVersion, params.taskId, params.doesIncrementMajor);
+        def nextVersion = this._getNextVersion(lastVersion, params.doesIncrementMajor);
 
         return [lastVersion, nextVersion];
     }

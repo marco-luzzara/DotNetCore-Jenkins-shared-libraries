@@ -13,4 +13,9 @@ class VCSAdapter implements Serializable {
     static void gitCheckout(String credentialsId, String repoUrl) {
         adaptee.gitCheckout(credentialsId, repoUrl, jenkinsUserName, jenkinsUserPwd);
     }
+
+    // do not use it when you already have a git repo in the same folder
+    static String getFileContentFromVCS(String credentialsId, String filePath, String repoUrl) {
+        return adaptee.getFileContentFromVCS(credentialsId, filePath, repoUrl);
+    }
 }

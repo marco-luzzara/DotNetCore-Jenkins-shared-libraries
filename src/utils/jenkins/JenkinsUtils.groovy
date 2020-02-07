@@ -1,8 +1,15 @@
-
 package utils.jenkins;
 
-def zip(String _zipFile, String _dir) {
-    zip zipFile: _zipFile, dir: _dir
+def _zip(String _zipFile, String _dir) {
+    zip(zipFile: _zipFile, dir: _dir);
+}
+
+def readJSONFromText(String jsonText) {
+    return readJSON(text: jsonText);
+}
+
+def _writeFile(String path, String content) {
+    writeFile(file: path, text: content);
 }
 
 def uploadToArtifactory(String artifactoryServerId, String uploadSpec) {

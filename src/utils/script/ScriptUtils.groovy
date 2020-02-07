@@ -12,4 +12,8 @@ def shReturnStatus(String cmd) {
     return sh(script:"${cmd}", returnStatus: true);
 }
 
+def log(String msg) {
+    echo(msg);
+}
+
 return this;

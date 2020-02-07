@@ -23,13 +23,10 @@ class Pipeline implements Serializable {
     Map<String, GenericStage> customizedStageMap = [:];
     GenericVersioningSystem versioningSystem = null;
 
-    Pipeline(PipelineConfig config, PrivateConfig privateConfig, Script _script) {
+    Pipeline(PipelineConfig config, PrivateConfig privateConfig) {
         this.config = config;
         this.privateConfig = privateConfig;
 
-        ScriptAdapter.script = _script;
-
-        JenkinsAdapter.script = _script;
         JenkinsAdapter.binaryRepoUser = privateConfig.binaryRepoUser;
         JenkinsAdapter.binaryRepoPwd = privateConfig.binaryRepoPwd;
 

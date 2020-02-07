@@ -1,7 +1,6 @@
 package utils.script;
 
 class ScriptAdapter implements Serializable {
-    static Script script;
     static ScriptUtils adaptee;
 
     static {
@@ -21,6 +20,6 @@ class ScriptAdapter implements Serializable {
     }
 
     static void log(String msg) {
-        script.echo(msg);
+        adaptee.log(msg);
     }
 }

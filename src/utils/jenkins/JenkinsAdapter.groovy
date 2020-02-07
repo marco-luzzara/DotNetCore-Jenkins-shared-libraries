@@ -1,7 +1,6 @@
 package utils.jenkins;
 
 class JenkinsAdapter implements Serializable {
-    static Script script;
     static JenkinsUtils adaptee;
     static String binaryRepoUser;
     static String binaryRepoPwd;
@@ -11,17 +10,15 @@ class JenkinsAdapter implements Serializable {
     }
 
     static void zip(String zipFile, String dir) {
-        // adaptee.zip(zipFile, dir);
-        script.zip(zipFile: zipFile, dir: dir);
+        adaptee._zip(zipFile, dir);
     }
 
     static Map readJSONFromText(String jsonText) {
-        return script.readJSON(text: jsonText);
+        return adaptee.readJSONFromText(jsonText);
     }
 
     static void writeFile(String path, String content) {
-        // adaptee.writeFile(path, content);
-        script.writeFile(file: path, text: content);
+        adaptee._writeFile(path, content);
     }
 
     static void uploadToArtifactory(String artifactoryServerId, String uploadSpec) {

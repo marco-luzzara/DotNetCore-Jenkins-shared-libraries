@@ -42,7 +42,7 @@ def createDotNetCorePipeline(Map configs, Map privateConfigs) {
     def pipelineConfigs = new PipelineConfig(configs);
     def pipelinePrivateConfigs = new PrivateConfig(privateConfigs);
 
-    def pipeline = new Pipeline(pipelineConfigs, pipelinePrivateConfigs, this);
+    def pipeline = new Pipeline(pipelineConfigs, pipelinePrivateConfigs);
 
     return pipeline;
 }

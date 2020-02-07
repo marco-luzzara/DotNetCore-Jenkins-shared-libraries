@@ -32,10 +32,10 @@ class PublishArtifactStage extends GenericStage {
 
     protected String buildUploadSpec(String csproj, String version) {
         def csprojFolder = csproj.substring(0, csproj.lastIndexOf('/'));
-        def csprojFile = getProjectNameFromCsProjPath(csproj);
+        def projectName = getProjectNameFromCsProjPath(csproj);
 
         def publishDeployFolder = "${csprojFolder}/${this.deployFolder}";
-        def zipFileName = "${getFormattedDate(new Date())}_${csprojFile}_${version}.zip";
+        def zipFileName = "${getFormattedDate(new Date())}_${projectName}_${version}.zip";
         def zipFilePath = "${publishDeployFolder}/${zipFileName}";
 
         log("publishDeployFolder: ${publishDeployFolder}");
@@ -50,7 +50,7 @@ class PublishArtifactStage extends GenericStage {
                 "files": [
                     {
                         "pattern": "${zipFilePath}",
-                        "target": "${this.basePathOnBinaryRepo}/${this.slnName}/${csprojFile}/"
+                        "target": "${this.basePathOnBinaryRepo}/${this.slnName}/${projectName}/"
                     }
                 ]
             }""";

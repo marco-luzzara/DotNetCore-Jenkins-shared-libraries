@@ -11,12 +11,12 @@ def getGenericNotifyMessage(
     def headCommitAuthor = getHEADCommitAuthor();
 
     return """
-        Pipeline: ${env.JOB_NAME}
-        Build: #${env.BUILD_NUMBER} on ${env.NODE_NAME}
-        Commit of: ${headCommitAuthor}
-        Status: ${status}
-        Url: ${env.BUILD_URL}
-        Additional Info: ${additionalInfo}
+        *Pipeline*: ${env.JOB_NAME}
+        *Build*: #${env.BUILD_NUMBER} on ${env.NODE_NAME}
+        *Commit of*: ${headCommitAuthor}
+        *Status*: ${status}
+        *Url*: ${env.BUILD_URL}
+        *Additional Info*: `${additionalInfo}`
         """
 }
 

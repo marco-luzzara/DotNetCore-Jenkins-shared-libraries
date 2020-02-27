@@ -48,7 +48,8 @@ abstract class TestStage extends GenericStage {
                     """);
             }
             finally {
-                castDotNetToJUnitTestReport("test/${testProjName}/${sanitizeTestResultsPath(this.testResultsPath)}/${logFileName}");
+                castDotNetToJUnitTestReport("test/${testProjName}/${sanitizeTestResultsPath(this.testResultsPath)}/*.trx");
+                // castDotNetToJUnitTestReport("test/${testProjName}/${sanitizeTestResultsPath(this.testResultsPath)}/${logFileName}");
             }
         }
     };

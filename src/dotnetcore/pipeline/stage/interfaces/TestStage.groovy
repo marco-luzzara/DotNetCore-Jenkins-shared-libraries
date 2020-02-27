@@ -26,12 +26,15 @@ abstract class TestStage extends GenericStage {
         def testProjects = getLinuxFilesOnRegex('./test/', '\\./.*/.*\\.csproj');
         def currentDate = new Date();
         def formattedTimeStamp = getFormattedTimeStamp(currentDate);
+        log("formattedTimeStamp: ${formattedTimeStamp}");
 
         for (testProj in testProjects) {
             log("tests for project ${testProj}");
 
             def testProjName = getProjectNameFromCsProjPath(testProj);
             def logFileName = "${type}+${testProjName}_${formattedTimeStamp}.trx"
+
+            log("logFileName: ${logFileName}");
 
             try {
                 basicSh("""dotnet test ${testProj} \

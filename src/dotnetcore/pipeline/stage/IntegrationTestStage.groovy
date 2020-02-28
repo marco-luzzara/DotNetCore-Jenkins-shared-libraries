@@ -19,7 +19,8 @@ class IntegrationTestStage extends TestStage {
     }
 
     def run() {
-        dotnetCliTest('ClassName~IT_|TestCategory~IntegrationTest', 'IT');
+        Closure runTest = { String testCommand -> basicSh(testCommand) };
+        dotnetCliTest('ClassName~IT_|TestCategory~IntegrationTest', 'IT', runTest);
         
         basicSh("""postman-combine-collections -f './test/NewmanTests/Collections/*.json' \
             -n '${this.slnName}_all_collections' \

@@ -14,6 +14,9 @@ class PipelineConfig implements Serializable {
     final String prjManagePortalUrl;
     final String artifactoryServerId;
     final String basePathOnBinaryRepo;
+    final String dockerVolumeSlaveWorkspace;
+    final String dockerVolumeNugetCache;
+    final String dockerImageDotNetSDK;
     List internalProjects;
     List deployProjects;
 
@@ -31,6 +34,9 @@ class PipelineConfig implements Serializable {
         this.prjManagePortalUrl = configs.prjManagePortalUrl;
         this.artifactoryServerId = configs.artifactoryServerId;
         this.basePathOnBinaryRepo = configs.basePathOnBinaryRepo;
+        this.dockerVolumeSlaveWorkspace = configs.dockerVolumeSlaveWorkspace;
+        this.dockerVolumeNugetCache = configs.dockerVolumeNugetCache;
+        this.dockerImageDotNetSDK = configs.dockerImageDotNetSDK;
         this.internalProjects = configs.internalProjects;
         this.deployProjects = configs.deployProjects;
     }

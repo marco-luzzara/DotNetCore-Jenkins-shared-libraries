@@ -11,18 +11,18 @@ abstract class TestStage extends GenericStage {
     String slnConfiguration
     String testResultsPath
 
-    TestStage(Map stageConfig = [:]) {
-        super(stageConfig);
+    TestStage(Map stageConfigs = [:]) {
+        super(stageConfigs);
 
-        this.slnConfiguration = stageConfig.slnConfiguration;
-        this.testResultsPath = stageConfig.testResultsPath;
+        this.slnConfiguration = stageConfigs.slnConfiguration;
+        this.testResultsPath = stageConfigs.testResultsPath;
     }
 
     protected String sanitizeTestResultsPath(String testResultsPath) {
         return testResultsPath.startsWith("./") ? testResultsPath.substring(2) : testResultsPath;
     }
 
-    def dotnetCliTest(String filter, String type) {
+    def dotnetCliTest(String filter, String type, Closure runTest) {
         def testProjects = getLinuxFilesOnRegex('./test/', '\\./.*/.*\\.csproj');
         def currentDate = new Date();
         def formattedTimeStamp = getFormattedTimeStamp(currentDate);
@@ -37,7 +37,7 @@ abstract class TestStage extends GenericStage {
             log("logFileName: ${logFileName}");
 
             try {
-                basicSh("""dotnet test ${testProj} \
+                runTest("""dotnet test ${testProj} \
                     -c ${this.slnConfiguration} \
                     --no-build \
                     --no-restore \

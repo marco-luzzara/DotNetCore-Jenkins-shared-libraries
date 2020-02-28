@@ -136,7 +136,11 @@ class Pipeline implements Serializable {
     protected void unitTest() {
         def standardStage = new UnitTestStage([
             slnConfiguration: this.config.slnConfiguration, 
-            testResultsPath: this.config.testResultsPath
+            testResultsPath: this.config.testResultsPath,
+            slnName: this.config.slnName,
+            dockerVolumeSlaveWorkspace: this.config.dockerVolumeSlaveWorkspace,
+            dockerVolumeNugetCache: this.config.dockerVolumeNugetCache,
+            dockerImageDotNetSDK: this.config.dockerImageDotNetSDK
         ]);
 
         def stage = this.getCustomStageIfExists(PipelineStages.UNITTEST, standardStage); 

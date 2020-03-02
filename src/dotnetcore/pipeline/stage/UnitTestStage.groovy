@@ -25,7 +25,7 @@ class UnitTestStage extends TestStage {
             -v ${this.dockerVolumeSlaveWorkspace}:/csproj \
             -v ${this.dockerVolumeNugetCache}:/root/.nuget/packages \
             ${this.dockerImageDotNetSDK} \
-            /bin/bash -c \\"cd '/csproj/${this.slnName}' && ${testCommand}\\"
+            /bin/bash -c "cd '/csproj/${this.slnName}' && ${testCommand}"
         """)};
 
         dotnetCliTest('ClassName!~IT_&TestCategory!~IntegrationTest', 'UT', runTest);

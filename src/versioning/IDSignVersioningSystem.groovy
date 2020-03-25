@@ -38,12 +38,7 @@ class IDSignVersioningSystem extends GenericVersioningSystem {
         def version = shReturnStdOut("curl '${versionHistoryUrl}'");
         log("version retrieved from ${versionHistoryUrl}: ${version}");
         
-        switch (version) {
-            case "Project Not found":
-                return "";
-            default:
-                return version;
-        }
+        return version;
     }
 
     private String _getNextVersion(String lastVersion, boolean doesIncrementMajor) {
